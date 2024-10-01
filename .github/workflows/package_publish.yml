@@ -1,10 +1,10 @@
-name: CI checks + deployment
+﻿name: CI checks + deployment
 
 on:
   pull_request:
-    branches: production
+    branches: main
   push:
-    branches: production
+    branches: main
 
 jobs:
   install-tools:
@@ -52,8 +52,8 @@ jobs:
       - name: Check format
         run: ./scripts/shell/check-format.sh src
 
-  luau-tests:
-    name: Run Luau tests via Open Cloud
+  package-publish:
+    name: Serialize Luau Lib and Publish as a Package
     runs-on: ubuntu-latest
     needs: [install-tools]
     concurrency:
@@ -67,26 +67,19 @@ jobs:
         with:
           path: ~/.foreman
           key: tools-${{ hashFiles('foreman.toml') }}
-      - name: Run tests
-        run: ./scripts/shell/test.sh default.project.json $TEST_TASK_FILE
+      - uses: leafo/gh-actions-lua@v9
+      - uses: leafo/gh-actions-luarocks@v4
+      # Install lua packages
+      - name: install a lfs
+        run: luarocks install luafilesystem
+      - name: Install lua
+        run: luarocks install dkjson
+      - name: Serialize Luau Lib and Write to Luau Task File
+        run: lua scripts/lua/serialize.lua ./scripts/lua/lib
+      - name: Publish Package
+        run: ./scripts/shell/package-publish.sh default.project.json $TEST_TASK_FILE
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
           ROBLOX_UNIVERSE_ID: ${{ vars.ROBLOX_TEST_UNIVERSE_ID }}
           ROBLOX_PLACE_ID: ${{ vars.ROBLOX_TEST_PLACE_ID }}
-          TEST_TASK_FILE: tasks/runTests.luau
-
-  deployment:
-    name: Deployment
-    runs-on: ubuntu-latest
-    needs: [install-tools, linting, formatting, luau-tests] # Only runs if all checks passed
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/production' }} # Only runs on pushes to production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3.3.0
-      - name: Restore cached Foreman tools
-        uses: actions/cache@v3.2.3
-        with:
-          path: ~/.foreman
-          key: tools-${{ hashFiles('foreman.toml') }}
-      - name: Publish
-        run: $HOME/.foreman/bin/rojo upload default.project.json --api_key ${{ secrets.ROBLOX_API_KEY }} --universe_id ${{ vars.ROBLOX_PRODUCTION_UNIVERSE_ID }} --asset_id ${{ vars.ROBLOX_PRODUCTION_PLACE_ID }}
+          TEST_TASK_FILE: tasks/packagePublish.luau
