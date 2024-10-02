@@ -1,0 +1,7 @@
+{
+    "luau-lsp.sourcemap.rojoProjectFile": "default.project.json",
+    "robloxLuauLSP.cli.extraArgs": [
+        "--load.place",
+        "default.project.json",
+    ],
+}

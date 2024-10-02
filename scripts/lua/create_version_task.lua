@@ -33,10 +33,10 @@ local function publish_package_asset(instance)
 	local as = game.AssetService
 
 	local requestParameters = {
-		CreatorId = 1253904492,
+		CreatorId = 3706781386,
 		CreatorType = Enum.AssetCreatorType.User,
-		Name = "A Lua Library",
-		Description = "hack your game",
+		Name = "Otter",
+		Description = "Declarative animation library for Roblox Lua built around (but not limited to) springs.",
 	}
 	
 	print("creating a new version")

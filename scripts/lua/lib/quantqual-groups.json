@@ -1,0 +1,13 @@
+{
+  "source": {
+    "owners": [
+      "otter"
+    ],
+    "paths": [
+      "benchmarks/legacyRoact",
+      "benchmarks/react",
+      "benchmarks/spring",
+      "benchmarks/rendering"
+    ]
+  }
+}
