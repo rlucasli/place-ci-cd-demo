@@ -42,7 +42,7 @@ local function publish_package_asset(instance)
 	print("creating a new version")
 	local versionId
 	local success, err = pcall(function()
-		result, versionId = as:CreateAssetVersionAsync(instance, Enum.AssetType.Model, 129883978505859, requestParameters)
+		result, versionId = as:CreateAssetVersionAsync(instance, Enum.AssetType.Model, 109578110827226, requestParameters)
 	end)
 
 	if success then
