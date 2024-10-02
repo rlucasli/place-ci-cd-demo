@@ -53,11 +53,11 @@ local function main()
     local json_string = json.encode(serialized_directory, { indent = true })
 
     create_package_task_code = read_file_content("./scripts/lua/create_package_task.lua")
-    insert_deserialized_directory_to_task = "json_string = [===[" .. json_string .. "]===]\n\n" .. task_code
+    insert_deserialized_directory_to_task = "json_string = [===[" .. json_string .. "]===]\n\n" .. create_package_task_code
     write_to_file(insert_deserialized_directory_to_task, "./tasks/packagePublish.luau")
 
     create_version_task_code = read_file_content("./scripts/lua/create_version_task.lua")
-    insert_deserialized_directory_to_task = "json_string = [===[" .. json_string .. "]===]\n\n" .. task_code
+    insert_deserialized_directory_to_task = "json_string = [===[" .. json_string .. "]===]\n\n" .. create_version_task_code
     write_to_file(insert_deserialized_directory_to_task, "./tasks/versionPublish.luau")
 end
 
