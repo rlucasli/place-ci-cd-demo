@@ -39,6 +39,7 @@ local function publish_package_asset(instance)
 		Description = "hack your game",
 	}
 	
+	
 	print("creating a new version")
 	local versionId
 	local success, err = pcall(function()
