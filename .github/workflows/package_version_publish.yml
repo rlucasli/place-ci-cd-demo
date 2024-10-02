@@ -1,0 +1,85 @@
+﻿name: CI checks + deployment
+
+on:
+  pull_request:
+    branches: production
+  push:
+    branches: production
+
+jobs:
+  install-tools:
+    name: Install tools
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cache Foreman tools
+        uses: actions/cache@v3.2.3
+        with:
+          path: ~/.foreman
+          key: tools-${{ hashFiles('foreman.toml') }}
+
+  linting:
+    name: Lint with Selene
+    runs-on: ubuntu-latest
+    needs: [install-tools]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+      - name: Restore cached Foreman tools
+        uses: actions/cache@v3.2.3
+        with:
+          path: ~/.foreman
+          key: tools-${{ hashFiles('foreman.toml') }}
+      - name: Lint
+        run: ./scripts/shell/lint.sh src
+
+  formatting:
+    name: Format with StyLua
+    runs-on: ubuntu-latest
+    needs: [install-tools]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+      - name: Restore cached Foreman tools
+        uses: actions/cache@v3.2.3
+        with:
+          path: ~/.foreman
+          key: tools-${{ hashFiles('foreman.toml') }}
+      - name: Check format
+        run: ./scripts/shell/check-format.sh src
+
+  package-publish:
+    name: Serialize Luau Lib and Publish A New Package Version
+    runs-on: ubuntu-latest
+    needs: [install-tools]
+    concurrency:
+      group: luau-execution
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+      - name: Restore cached Foreman tools
+        uses: actions/cache@v3.2.3
+        with:
+          path: ~/.foreman
+          key: tools-${{ hashFiles('foreman.toml') }}
+      - uses: leafo/gh-actions-lua@v9
+      - uses: leafo/gh-actions-luarocks@v4
+      # Install lua packages
+      - name: install a lfs
+        run: luarocks install luafilesystem
+      - name: Install lua
+        run: luarocks install dkjson
+      - name: Serialize Luau Lib and Write to Luau Task File
+        run: lua scripts/lua/serialize.lua ./scripts/lua/lib
+      - name: Publish Package
+        run: ./scripts/shell/package-publish.sh default.project.json $TEST_TASK_FILE
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_UNIVERSE_ID: ${{ vars.ROBLOX_TEST_UNIVERSE_ID }}
+          ROBLOX_PLACE_ID: ${{ vars.ROBLOX_TEST_PLACE_ID }}
+          TEST_TASK_FILE: tasks/versionPublish.luau

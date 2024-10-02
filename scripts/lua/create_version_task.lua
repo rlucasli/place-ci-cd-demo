@@ -35,21 +35,9 @@ local function publish_package_asset(instance)
 	local requestParameters = {
 		CreatorId = 1253904492,
 		CreatorType = Enum.AssetCreatorType.User,
-		Name = "Today",
+		Name = "A Lua Library",
 		Description = "hack your game",
 	}
-
-	local result, assetId
-	print("creating an asset")
-	local success, err = pcall(function()
-		result, assetId = as:CreateAssetAsync(instance, Enum.AssetType.Model, requestParameters)
-	end)
-
-	if success then
-		print(result, assetId)
-	else
-		warn(err)
-	end
 	
 	print("creating a new version")
 	local versionId
