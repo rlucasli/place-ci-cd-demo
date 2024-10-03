@@ -36,7 +36,7 @@ local function publish_package_asset(instance)
 		CreatorId = 1253904492,
 		CreatorType = Enum.AssetCreatorType.User,
 		Name = "A Lua Library",
-		Description = "hack your game",
+		Description = "good library",
 	}
 	
 	print("creating a new version")
