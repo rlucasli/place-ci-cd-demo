@@ -1,5 +1,4 @@
-﻿name: CI checks + deployment
-
+﻿name: Create a new Package
 on:
   pull_request:
     branches: production
