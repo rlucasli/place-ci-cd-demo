@@ -52,6 +52,7 @@ local function publish_package_asset(instance)
 	end
 end
 
+
 local function main()
 	local root = read_json(json_string)
 	local model = Instance.new("Model")
