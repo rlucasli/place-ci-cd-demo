@@ -33,7 +33,7 @@ local function publish_package_asset(instance)
 	local as = game.AssetService
 
 	local requestParameters = {
-		CreatorId = 1253904492,
+		CreatorId = 3869509676,
 		CreatorType = Enum.AssetCreatorType.User,
 		Name = "A Lua Library",
 		Description = "good library",
@@ -51,6 +51,8 @@ local function publish_package_asset(instance)
 		warn(err)
 	end
 end
+
+
 
 local function main()
 	local root = read_json(json_string)
