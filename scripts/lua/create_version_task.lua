@@ -36,13 +36,13 @@ local function publish_package_asset(instance)
 		CreatorId = 1253904492,
 		CreatorType = Enum.AssetCreatorType.User,
 		Name = "A Lua Library",
-		Description = "hack your game",
+		Description = "good library",
 	}
 	
 	print("creating a new version")
-	local versionId
+	local result, versionId
 	local success, err = pcall(function()
-		result, versionId = as:CreateAssetVersionAsync(instance, Enum.AssetType.Model, 129883978505859, requestParameters)
+		result, versionId = as:CreateAssetVersionAsync(instance, Enum.AssetType.Model, 124954374814947, requestParameters)
 	end)
 
 	if success then
